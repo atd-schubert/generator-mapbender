@@ -1,0 +1,33 @@
+parameters:
+    database_driver:   <%= dbType %>
+    database_host:     <%= dbHost %>
+    database_port:     <%= dbPort %>
+    database_name:     <%= dbName %>
+    database_path:     <%= dbPath %>
+    database_user:     <%= dbUser %>
+    database_password: <%= dbPassword %>
+
+    mailer_transport:  smtp
+    mailer_host:       localhost
+    mailer_user:       ~
+    mailer_password:   ~
+
+    # locale en, de, it, es are available
+    fallback_locale:   en
+    locale:            en
+    secret:            <%= secret %>
+
+    fom:
+        server_name:   Mapbender3
+        server_version: 3.0.4.1
+        server_logo:   bundles/mapbendercore/image/logo_mb3.png
+
+    # framework : http://symfony.com/doc/2.1/reference/configuration/framework.html#cookie-lifetime
+    cookie_secure: false
+    cookie_lifetime: 3600
+
+    # activate sass_assets and define the compass_path, ruby_path, if you want to work with compass and edit sass files
+    # if not leave sass_assets: false
+    sass_assets: false
+    compass_path: ~
+    ruby_path: ~
