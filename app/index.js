@@ -199,6 +199,16 @@ module.exports = yeoman.generators.Base.extend({
         shell.chmod('-R', 'a+rw', this.destinationPath(this.projectName + '/application/app/cache'));
         console.log('File permissions changed.');
     },
+    addingIndexPhpForCompatibility: function () {
+        var cmd,
+            done = this.async();
+        console.log('Setting up development php...');
+        cmd = spawn('touch', [this.destinationPath(this.projectName + '/application/web/index.php')]);
+        cmd.on('close', function () {
+            console.log('Develop php is configured.');
+            done();
+        });
+    },
     setParametersYml: function () {
         console.log('Create parameters.yml');
         var yml = fs.readFileSync(this.templatePath('parameters.yml')).toString();
