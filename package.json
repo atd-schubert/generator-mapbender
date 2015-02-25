@@ -1,6 +1,6 @@
 {
   "name": "generator-mapbender",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A Yeoman generator for mapbender",
   "main": "index.js",
   "scripts": {
