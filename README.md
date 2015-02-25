@@ -1,8 +1,6 @@
-# generator-mapbender [![Build Status](https://secure.travis-ci.org/atd-schubert/generator-mapbender.png?branch=master)](https://travis-ci.org/atd-schubert/generator-mapbender)
+# generator-mapbender
 
-> [Yeoman](http://yeoman.io) generator
-
-A Yeoman generator for mapbender
+> [Yeoman](http://yeoman.io) generator for [mapbender](http://mapbender3.org/)
 
 ## Getting Started
 
