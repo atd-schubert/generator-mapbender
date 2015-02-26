@@ -160,6 +160,7 @@ module.exports = yeoman.generators.Base.extend({
             this.serverUser = props.serverUser;
             this.secret = props.secret;
             this.gitUrl = props.gitUrl;
+            this.import = props.import;
             this.rootAccount = {username: props.rootUsername, email: props.rootEMail, passwd: props.rootPasswd};
 
             if (this.dbType === "postgreSQL") {
@@ -260,6 +261,36 @@ module.exports = yeoman.generators.Base.extend({
             console.log('Initialized mapbender with grunt.');
             done();
         });
+    },
+    importEPSGData: function () {
+        if(this.import.indexOf('EPSG data for proj')>=0) {
+            console.log('Import EPSG data into mapbender...');
+            var cmd, done = this.async();
+            cmd = spawn(this.destinationPath(this.projectName + '/application/app/console'), [
+                'doctrine:fixtures:load',
+                '--fixtures=./mapbender/src/Mapbender/CoreBundle/DataFixtures/ORM/Epsg/',
+                '--append']);
+            cmd.on('close', function () {
+                console.log('EPSG data imported.');
+                done();
+            });
+            cmd.stdin.end();
+        }
+    },
+    importDemoApp: function () {
+        if(this.import.indexOf('Demo Applications')>=0) {
+            console.log('Import demo application into mapbender...');
+            var cmd, done = this.async();
+            cmd = spawn(this.destinationPath(this.projectName + '/application/app/console'), [
+                'doctrine:fixtures:load',
+                '--fixtures=./mapbender/src/Mapbender/CoreBundle/DataFixtures/ORM/Application/',
+                '--append']);
+            cmd.on('close', function () {
+                console.log('Demo application imported.');
+                done();
+            });
+            cmd.stdin.end();
+        }
     },
     setPassword: function () {
         console.log('Set credentials for root...');
