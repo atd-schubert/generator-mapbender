@@ -58,12 +58,12 @@ module.exports = yeoman.generators.Base.extend({
                     name: 'rootUsername',
                     message: 'Enter the username for the root account:',
                     default: 'root'
-                },  {
+                }, {
                     type: 'input',
                     name: 'rootEMail',
                     message: 'Enter an email address for the root account:',
                     validate: function (input){
-                      return /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.?:[A-Z]{10}$/.test(input);
+                        return /^[a-zA-Z0-9\._\-]+@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,10}$/.test(input);
                     }
                 }, {
                     type: 'password',
@@ -71,6 +71,20 @@ module.exports = yeoman.generators.Base.extend({
                     message: 'Enter a password for the root account:',
                     default: 'root'
                 }, {
+                    type: 'checkbox',
+                    name: 'import',
+                    message: 'Select data to import in mapbender:',
+                    choices: [
+                        {
+                            name: 'EPSG data for proj',
+                            default: true
+                        },
+                        {
+                            name: 'Demo Applications',
+                            default: false
+                        }
+                    ]
+                },{
                     type: 'list',
                     name: 'dbType',
                     message: 'Whitch database type do you want to use?',
