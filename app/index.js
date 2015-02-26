@@ -61,7 +61,10 @@ module.exports = yeoman.generators.Base.extend({
                 },  {
                     type: 'input',
                     name: 'rootEMail',
-                    message: 'Enter an email address for the root account:'
+                    message: 'Enter an email address for the root account:',
+                    validate: function (input){
+                      return /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.?:[A-Z]{10}$/.test(input);
+                    }
                 }, {
                     type: 'password',
                     name: 'rootPasswd',
@@ -167,8 +170,6 @@ module.exports = yeoman.generators.Base.extend({
                 }.bind(self));
             }
         }.bind(self));
-
-
 
     },
     gitclone: function () {
