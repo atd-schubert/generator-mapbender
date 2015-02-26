@@ -77,11 +77,11 @@ module.exports = yeoman.generators.Base.extend({
                     choices: [
                         {
                             name: 'EPSG data for proj',
-                            default: true
+                            checked: true
                         },
                         {
                             name: 'Demo Applications',
-                            default: false
+                            checked: false
                         }
                     ]
                 },{
