@@ -269,7 +269,8 @@ module.exports = yeoman.generators.Base.extend({
             cmd = spawn(this.destinationPath(this.projectName + '/application/app/console'), [
                 'doctrine:fixtures:load',
                 '--fixtures=./mapbender/src/Mapbender/CoreBundle/DataFixtures/ORM/Epsg/',
-                '--append']);
+                '--append'],
+                {cwd: this.destinationPath(this.projectName + '/application')});
             cmd.on('close', function () {
                 console.log('EPSG data imported.');
                 done();
@@ -284,7 +285,8 @@ module.exports = yeoman.generators.Base.extend({
             cmd = spawn(this.destinationPath(this.projectName + '/application/app/console'), [
                 'doctrine:fixtures:load',
                 '--fixtures=./mapbender/src/Mapbender/CoreBundle/DataFixtures/ORM/Application/',
-                '--append']);
+                '--append'],
+                {cwd: this.destinationPath(this.projectName + '/application')});
             cmd.on('close', function () {
                 console.log('Demo application imported.');
                 done();
