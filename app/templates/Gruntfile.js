@@ -410,10 +410,10 @@ module.exports = function wheregroupTaskRunner(grunt) {
       grunt.log.writeln('composer done');
       done();
     });
-    cmd.stderr.on("data", function (data) {
+    /*cmd.stderr.on("data", function (data) {
       //grunt.fail.warn('Error with composer!');
       grunt.fail.fatal(data.toString());
-    });
+    });*/
     cmd.stdout.on("data", function (data) {
       data = data.toString();
       if (data.indexOf('http://getcomposer.org/doc/articles/troubleshooting.md') >= 0) {
