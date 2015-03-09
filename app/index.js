@@ -7,6 +7,7 @@ var shell = require('shelljs');
 var crypto = require('crypto');
 var _ = require('underscore');
 var fs = require('fs');
+var mkdirp = require('mkdirp');
 
 var insertValue = function (doc, field, value) {
     return doc.split('<%= ' + field + ' %>').join(value);
@@ -191,9 +192,24 @@ module.exports = yeoman.generators.Base.extend({
         var done = this.async();
         console.log('Cloning git repository ("' + this.gitUrl + '") to folder "' + this.projectName + '"...');
         var cmd = spawn('git', ['clone', this.gitUrl, this.projectName]);
-        cmd.on('close', function (){
-            console.log('Git repository fetched.');
+
+        cmd.on('exit', function (code) {
+            if (!code) {
+                console.log('');
+                console.log('Git repository fetched.');
+            } else {
+                console.log('');
+                console.log('Error ' + code + ' while fetching git repository.');
+            }
+        });
+        cmd.on('close', function () {
             done();
+        });
+        cmd.stderr.on('data', function (data) {
+            console.log(data.toString());
+        });
+        cmd.stdout.on('data', function (data) {
+            console.log(data.toString());
         });
         cmd.stdin.end();
     },
@@ -202,10 +218,24 @@ module.exports = yeoman.generators.Base.extend({
         var done = this.async();
         console.log("Cloning git submodules...");
         var cmd = spawn('git', ['submodule', 'update', '--init', '--recursive'], {cwd: './' + this.projectName});
-        cmd.on('close', function (){
-            console.log('Git submodules fetched.');
-            done();
 
+        cmd.on('exit', function (code) {
+            if (!code) {
+                console.log('');
+                console.log('Git submodules fetched.');
+            } else {
+                console.log('');
+                console.log('Error ' + code + ' while fetching git submodules.');
+            }
+        });
+        cmd.on('close', function () {
+            done();
+        });
+        cmd.stderr.on('data', function (data) {
+            console.log(data.toString());
+        });
+        cmd.stdout.on('data', function (data) {
+            console.log(data.toString());
         });
         cmd.stdin.end();
     },
@@ -247,9 +277,23 @@ module.exports = yeoman.generators.Base.extend({
         fs.writeFileSync(this.destinationPath(this.projectName + '/package.json'), fs.readFileSync(this.templatePath('_package.json')));
         fs.writeFileSync(this.destinationPath(this.projectName + '/Gruntfile.js'), fs.readFileSync(this.templatePath('Gruntfile.js')));
         cmd = spawn('npm', ['install'], {cwd: this.destinationPath(this.projectName)});
+        cmd.on('exit', function (code) {
+            if (!code) {
+                console.log('');
+                console.log('Grunt installed.');
+            } else {
+                console.log('');
+                console.error('Grunt installation exiting with status code ' + code + '.');
+            }
+        });
         cmd.on('close', function () {
-            console.log('Grunt installed.');
             done();
+        });
+        cmd.stderr.on('data', function (data) {
+            console.log(data.toString());
+        });
+        cmd.stdout.on('data', function (data) {
+            console.log(data.toString());
         });
         cmd.stdin.end();
     },
@@ -257,10 +301,25 @@ module.exports = yeoman.generators.Base.extend({
         console.log('Initialize mapbender with grunt...');
         var cmd, done = this.async();
         cmd = spawn('grunt', ['init'], {cwd: this.destinationPath(this.projectName)});
+        cmd.on('exit', function (code) {
+            if (!code) {
+                console.log('');
+                console.log('Initialized mapbender with grunt.');
+            } else {
+                console.log('');
+                console.log('Error ' + code + ' while initializing mapbender with grunt.');
+            }
+        });
         cmd.on('close', function () {
-            console.log('Initialized mapbender with grunt.');
             done();
         });
+        cmd.stderr.on('data', function (data) {
+            console.log(data.toString());
+        });
+        cmd.stdout.on('data', function (data) {
+            console.log(data.toString());
+        });
+        cmd.stdin.end();
     },
     importEPSGData: function () {
         if(this.import.indexOf('EPSG data for proj')>=0) {
@@ -271,9 +330,23 @@ module.exports = yeoman.generators.Base.extend({
                 '--fixtures=./mapbender/src/Mapbender/CoreBundle/DataFixtures/ORM/Epsg/',
                 '--append'],
                 {cwd: this.destinationPath(this.projectName + '/application')});
+            cmd.on('exit', function (code) {
+                if (!code) {
+                    console.log('');
+                    console.log('EPSG data imported.');
+                } else {
+                    console.log('');
+                    console.log('Error ' + code + ' while importing EPSG data.');
+                }
+            });
             cmd.on('close', function () {
-                console.log('EPSG data imported.');
                 done();
+            });
+            cmd.stderr.on('data', function (data) {
+                console.log(data.toString());
+            });
+            cmd.stdout.on('data', function (data) {
+                console.log(data.toString());
             });
             cmd.stdin.end();
         }
@@ -287,9 +360,23 @@ module.exports = yeoman.generators.Base.extend({
                 '--fixtures=./mapbender/src/Mapbender/CoreBundle/DataFixtures/ORM/Application/',
                 '--append'],
                 {cwd: this.destinationPath(this.projectName + '/application')});
+            cmd.on('exit', function (code) {
+                if (!code) {
+                    console.log('');
+                    console.log('Demo application imported.');
+                } else {
+                    console.log('');
+                    console.log('Error ' + code + ' while importing demo application.');
+                }
+            });
             cmd.on('close', function () {
-                console.log('Demo application imported.');
                 done();
+            });
+            cmd.stderr.on('data', function (data) {
+                console.log(data.toString());
+            });
+            cmd.stdout.on('data', function (data) {
+                console.log(data.toString());
             });
             cmd.stdin.end();
         }
@@ -303,9 +390,23 @@ module.exports = yeoman.generators.Base.extend({
             '--email=' + this.rootAccount.email,
             '--password=' + this.rootAccount.passwd,
             '--silent'], {cwd: this.destinationPath(this.projectName + '/application')});
+        cmd.on('exit', function (code) {
+            if (!code) {
+                console.log('');
+                console.log('Saved credentials for root-user.');
+            } else {
+                console.log('');
+                console.log('Error ' + code + ' while saving credentials for root-user.');
+            }
+        });
         cmd.on('close', function () {
-            console.log('Saved credentials for root-user.');
             done();
+        });
+        cmd.stderr.on('data', function (data) {
+            console.log(data.toString());
+        });
+        cmd.stdout.on('data', function (data) {
+            console.log(data.toString());
         });
         cmd.stdin.end();
     },
