@@ -241,6 +241,8 @@ module.exports = yeoman.generators.Base.extend({
     },
     chmodLogsAndCache: function () {
         console.log('Change file permissions...');
+        mkdirp.sync(this.destinationPath(this.projectName + '/application/app/logs'));
+        mkdirp.sync(this.destinationPath(this.projectName + '/application/app/cache'));
         shell.chmod('-R', 'a+rw', this.destinationPath(this.projectName + '/application/app/logs'));
         shell.chmod('-R', 'a+rw', this.destinationPath(this.projectName + '/application/app/cache'));
         console.log('File permissions changed.');
