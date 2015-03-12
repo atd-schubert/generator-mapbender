@@ -4,6 +4,9 @@
 
 ## Getting Started
 
+### Requirements
+You have to have the [latest node version](https://nodejs.org/download/). Sometimes Nodejs from your distributor causes problems with yeoman. Please use node from [nodejs.org](https://nodejs.org) and not from your distributor!
+
 ### What is Yeoman?
 
 Trick question. It's not a thing. It's this guy:
