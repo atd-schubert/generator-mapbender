@@ -17,17 +17,87 @@ module.exports = yeoman.generators.Base.extend({
     initializing: function () {
         this.pkg = require('../package.json');
     },
-
     prompting: function () {
-        var done = this.async(),
-            self = this;
-
-
         // Have Yeoman greet the user.
         this.log(yosay(
             'Welcome to the majestic ' + chalk.red('Mapbender') + ' generator!'
         ));
+    },
+    checkRequirements: function () {
+        var cmd, err =[], working = [], done = this.async(), phpCommands = [], self = this;
+        phpCommands.push('if(function_exists("curl_version")) {echo "\\ncurl";} else {error_log("\\ncurl");}');
+        phpCommands.push('if(extension_loaded("pdo_sqlite")) {echo "\\nsqlite";} else {error_log("\\nsqlite");}');
+        phpCommands.push('if(extension_loaded("pdo_mysql")) {echo "\\nmysql";} else {error_log("\\nmysql");}');
+        phpCommands.push('if(extension_loaded("pdo_pgsql")) {echo "\\npqsql";} else {error_log("\\npgsql");}');
+        // PHP-CLI
+        try {
+            cmd = spawn('php', ['-r', phpCommands.join(' ')]);
+        } catch (e) {
+            console.error(chank.red('You have to have an installed version of php-cli!'));
+            console.error('You have to install "php5-cli" to your os first!');
+            process.exit(1);
+        } finally {
+            cmd.stdin.end();
+            cmd.stderr.on('data', function (data) {
+                err.push(data.toString());
+            });
+            cmd.stdout.on('data', function (data) {
+                working.push(data.toString());
+            });
+            cmd.on('close', function () {
+                err = err.join(' ');
+                if (err.indexOf('sqlite') >= 0) {
+                    console.error(chalk.yellow('You have no PDO for sqlite!'));
+                    console.error('You have to install "php5-pgsql" to your os, if you want to use a sqlite database!');
+                    console.error('');
+                    self.noSqlite = true;
+                }
+                if (err.indexOf('mysql') >= 0) {
+                    console.error(chalk.yellow('You have no PDO for MySQL!'));
+                    console.error('You have to install "php5-pgsql" to your os, if you want to use a MySQL database!');
+                    console.error('');
+                    self.noMysql = true;
+                }
+                if (err.indexOf('pgsql') >= 0) {
+                    console.error(chalk.yellow('You have no PDO for PostgreSQL!'));
+                    console.error('You have to install "php5-pgsql" to your os, if you want to use a PostgreSQL database!');
+                    console.error('');
+                    self.noPgsql = true;
+                }
+                if (err.indexOf('curl') >= 0) {
+                    console.error(chalk.red('You have no working version of php-curl!'));
+                    console.error('You have to install "php5-curl" to your os first!');
+                    process.exit(1);
+                }
+                if (self.noSqlite && self.noMysql && self.noPgsql) {
+                    console.error(chalk.red('You need to have at least one PDO driver installed!'));
+                    console.error('Please install one PDO driver first!');
+                    process.exit(1);
+                }
+                done();
+            });
+        }
+    },
+    realPrompting: function () {
+        var done = this.async(),
+            self = this;
 
+        var databasePrompt = {
+            type: 'list',
+            name: 'dbType',
+            message: 'Whitch database type do you want to use?',
+            choices: [],
+            default: 'postgreSQL'
+        };
+        if(!this.noPgsql) {
+            databasePrompt.choices.push('postgreSQL');
+        }
+        if(!this.noMysql) {
+            databasePrompt.choices.push('MySQL');
+        }
+        if(!this.noSqlite) {
+            databasePrompt.choices.push('sqlite');
+        }
         var prompts = {
             main: [
                 {
@@ -85,13 +155,7 @@ module.exports = yeoman.generators.Base.extend({
                             checked: false
                         }
                     ]
-                },{
-                    type: 'list',
-                    name: 'dbType',
-                    message: 'Whitch database type do you want to use?',
-                    choices: ['postgreSQL' ,'MySQL' ,'sqlite'],
-                    default: 'postgreSQL'
-                }],
+                }, databasePrompt],
             sqlite: [{
                 type: 'input',
                 name: 'dbPath',
