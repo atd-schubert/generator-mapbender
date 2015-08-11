@@ -77,8 +77,10 @@ var mkPromptsFromParametersYml = function (obj, settings) {
                     default: (function(type){
                         if(type === 'pdo_psql') {
                             return 'psql';
+                        } else if (type === 'pdo_mysql') {
+                            return 'mysql';
                         }
-                        return 'mysql';// mysql
+                        return '';// mysql
 
                     })(settings.dbType)
                 });
