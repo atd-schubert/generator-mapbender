@@ -37,7 +37,7 @@ var mkPromptsFromParametersYml = function (obj, settings) {
 
                     })(settings.dbType),
                     validate: function (val) {
-                        if (/^[0-9]+$/) {
+                        if (!/^[0-9]+$/.test(val)) {
                             return 'A port has to be a number';
                         }
                         return true;
