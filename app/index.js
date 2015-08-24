@@ -35,6 +35,7 @@ module.exports = yeoman.generators.Base.extend({
             this.pkg = require('../package.json');
         },
         checkServer: function () {
+            // TODO: use npm module: which!
             var cmd,
                 self = this,
                 unfinished = 3,
