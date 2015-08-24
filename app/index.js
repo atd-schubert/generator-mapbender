@@ -109,11 +109,17 @@ module.exports = yeoman.generators.Base.extend({
                 });
                 cmd.on('close', function () {
                     err = err.join(' ');
+                    working = working.join(' ');
+                    self.noSqlite = true;
+                    self.noMysql = true;
+                    self.noPgsql = true;
                     if (err.indexOf('sqlite') >= 0) {
                         console.error(chalk.yellow('You have no PDO for sqlite!'));
                         console.error('You have to install "php5-pgsql" to your os, if you want to use a sqlite database!');
                         console.error('');
-                        self.noSqlite = true;
+                    }
+                    if (working.indexOf('sqlite') >= 0) {
+                        self.noSqlite = false;
                     }
                     if (err.indexOf('mysql') >= 0) {
                         console.error(chalk.yellow('You have no PDO for MySQL!'));
@@ -121,11 +127,17 @@ module.exports = yeoman.generators.Base.extend({
                         console.error('');
                         self.noMysql = true;
                     }
+                    if (working.indexOf('mysql') >= 0) {
+                        self.noMysql = false;
+                    }
                     if (err.indexOf('pgsql') >= 0) {
                         console.error(chalk.yellow('You have no PDO for PostgreSQL!'));
                         console.error('You have to install "php5-pgsql" to your os, if you want to use a PostgreSQL database!');
                         console.error('');
                         self.noPgsql = true;
+                    }
+                    if (working.indexOf('pgsql') >= 0) {
+                        self.noPgsql = false;
                     }
                     if (err.indexOf('curl') >= 0) {
                         console.error(chalk.red('You have no working version of php-curl!'));
