@@ -76,7 +76,7 @@ var mkPromptsFromParametersYml = function (obj, settings) {
                     message: 'Enter username for database:',
                     default: (function(type){
                         if(type === 'pdo_psql') {
-                            return 'psql';
+                            return 'postgres';
                         } else if (type === 'pdo_mysql') {
                             return 'mysql';
                         }
